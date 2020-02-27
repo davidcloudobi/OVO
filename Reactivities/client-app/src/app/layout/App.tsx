@@ -1,17 +1,16 @@
 import React, { Component } from "react";
 import { Header, Icon, List } from "semantic-ui-react";
-import "./App.css";
 import axios from "axios";
 
 class App extends Component {
   state = {
-    Values: []
+    activities: []
   };
 
   componentDidMount() {
-    axios.get("http://localhost:5000/weatherforecast").then(response => {
+    axios.get("http://localhost:5000/api/activities").then(response => {
       this.setState({
-        Values: response.data
+        activities: response.data
       });
     });
   }
@@ -24,7 +23,7 @@ class App extends Component {
         </Header>
 
         <List>
-          {this.state.Values.map((res: any) => (
+          {this.state.activities.map((res: any) => (
             <List.Item key={res.id}>{res.name}</List.Item>
           ))}
         </List>
