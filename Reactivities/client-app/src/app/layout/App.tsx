@@ -1,35 +1,56 @@
-import React, { Component } from "react";
-import { Header, Icon, List } from "semantic-ui-react";
+import React, {  useState, useEffect , Fragment } from "react";
+import {   Container } from "semantic-ui-react";
 import axios from "axios";
+import { IActivity } from "../models/activity";
+import { NavBar } from "../../features/nav/NavBar";
+import { ActivityDashboard } from "../../features/activities/dashboard/ActivityDashboard";
 
-class App extends Component {
-  state = {
-    activities: []
-  };
+interface IState {
+  activities: IActivity[];
+}
+ 
 
-  componentDidMount() {
-    axios.get("http://localhost:5000/api/activities").then(response => {
-      this.setState({
-        activities: response.data
+const App = ()=> {
+ 
+  const [activities, setActivities] = useState<IActivity[]>([])
+  const [selectedActivity, setSelectedActivity] = useState<IActivity | null>(null)
+  const [editMode, setEditMode] =useState(false)
+
+
+const handleSelectedActivity = (id:string)=>{
+  setSelectedActivity(activities.filter(activity=> activity.id === id)[0])
+}
+
+const handleOpenCreateForm =()=> {
+  setSelectedActivity(null);
+  setEditMode(true);
+}
+
+
+  useEffect(() => {
+    axios
+      .get<IActivity[]>("http://localhost:5000/api/activities")
+      .then(response => {
+        setActivities(response.data)
       });
-    });
-  }
-  render() {
-    return (
-      <div>
-        <Header as="h2">
-          <Icon name="users" />
-          <Header.Content>Reactivities</Header.Content>
-        </Header>
+  
+  }, []);
 
-        <List>
-          {this.state.activities.map((res: any) => (
-            <List.Item key={res.id}>{res.name}</List.Item>
-          ))}
-        </List>
-      </div>
+    return (
+      <Fragment>
+
+        <NavBar openCreateForm={handleOpenCreateForm}></NavBar>
+<Container style={{marginTop: "7em"}}>
+          <ActivityDashboard
+           activities={activities}
+            selectActivity={handleSelectedActivity}
+             selectedActivity ={selectedActivity}
+             editMode={editMode}
+             setEditMode={setEditMode} />
+</Container>
+      </Fragment>
     );
-  }
+  
 }
 
 export default App;
