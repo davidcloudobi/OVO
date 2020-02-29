@@ -8,6 +8,8 @@ using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -35,6 +37,9 @@ namespace API {
                     policy.AllowAnyHeader ().AllowAnyMethod ().WithOrigins ("http://localhost:3000");
                 });
             });
+
+            //services.AddIdentity<AppUser, IdentityRole>()
+            //    .AddEntityFrameworkStores<DataContext>();
 
             services.AddMediatR(typeof(List.Handler).Assembly);
 
